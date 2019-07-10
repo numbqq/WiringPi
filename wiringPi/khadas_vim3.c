@@ -32,20 +32,20 @@ static const int pinToGpio_rev[64] = {
 	//wiringPi number to native gpio number
 	 -1,353,		//   0 | 1  :					  			| GPIOAO_3
 	 -1, -1,		//   2 | 3  :					  			|
-	 -1,301,		//	 4 | 5  :					  			| GPIOA_1
+	300,301,		//	 4 | 5  :					  			| GPIOA_1
 	303, -1,		//	 6 | 7  :						GPIOA_3 |
 	 -1, -1,		// 	 8 | 9  :								|
 	302,304,		//  10 | 11 :						GPIOA_2 | GPIOA_4
 	 -1, -1,		//	12 | 13 :								|
-	 -1, -1,		// 	14 | 15 :								|
+	 -1,315,		// 	14 | 15 :								|
 	352, -1,		// 	16 | 17 :					   GPIOAO_2 |
 	 -1, -1,		//	18 | 19 :								|
 	 -1,326,		//	20 | 21 :								| GPIOH_6
 	327, -1,		// 	22 | 23 :					  	GPIOH_7 |
 	351,350, 		//	24 | 25 :					   GPIOAO_1 | GPIOAO_0
 	 -1, -1,		//	26 | 27 :								|
-	 -1, -1,		//	28 | 29 :					  		    |
-	 -1, -1,		//	30 | 31 : 								|
+	 -1,314,		//	28 | 29 :					  		    |
+	 -1,324,		//	30 | 31 : 								|
 	// Padding:
 	-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, //32to47
 	-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, //48to63
@@ -56,22 +56,22 @@ static const int phyToGpio_rev[64] = {
 	//physical header pin number to native gpio number
 	 -1,				//	0
 	 -1, -1,			//	 1 | 21 :						 5V | GND
-	 -1, -1,			//	 2 | 22 :						 5V	| GPIOA_15
-	 -1, -1,			//	 3 | 23 :					 USB_DM | GPIOA_14
+	 -1,315,			//	 2 | 22 :						 5V	| GPIOA_15
+	 -1,314,			//	 3 | 23 :					 USB_DM | GPIOA_14
 	 -1, -1,			//	 4 | 24 :					 USB_DP | GND
 	 -1,352,			//	 5 | 25 :						GND	| GPIOAO_2
 	 -1,353,			//	 6 | 26 :					 MCU3.3 | GPIOAO_3
 	 -1, -1,			//	 7 | 27 :				  	MCUNrST | 3.3V
 	 -1, -1,			//	 8 | 28 :				  	MCUSWIM | GND
 	 -1,301,			//	 9 | 29 :						GND	| GPIOA_1
-	 -1, -1,			//	10 | 30 :					   ADC0	| GPIOA_0
+	 -1,300,			//	10 | 30 :					   ADC0	| GPIOA_0
 	 -1,303,			//	11 | 31 :					   1.8V	| GPIOA_3
 	 -1,302,			//	12 | 32 :					   ADC1	| GPIOA_2
 	 -1,304,			//	13 | 33 :					  SPDIF	| GPIOA_4
 	 -1, -1,			//	14 | 34 :						GND	| GND
 	326, -1,			//	15 | 35 :	  (GPIOH_6)UART_RX_AO_B | PWM-F
 	327, -1,			//	16 | 36 :	  (GPIOH_7)UART_TX_AO_B | RTC_CLK
-	 -1, -1,			//	17 | 37 :						GND	| GPIOH_4
+	 -1,324,			//	17 | 37 :						GND	| GPIOH_4
 	351, -1,			//	18 | 38 :		 (GPIOAO_1)Linux_RX	| MCUFA_1
 	350, -1,			//	19 | 39 :		 (GPIOAO_0)Linux_TX | GPIOZ_15
 	 -1, -1,			//	20 | 40 :					   3.3V	| GND
@@ -148,6 +148,8 @@ static int gpioToGPSETReg (int pin)
 		return VIM3_GPIOH_OUTP_REG_OFFSET;
 	if(pin >= VIM3_GPIOAO_PIN_START && pin <= VIM3_GPIOAO_PIN_END)
 		return VIM3_GPIOAO_OUTP_REG_OFFSET;
+	if(pin >= VIM3_GPIOZ_PIN_START && pin <= VIM3_GPIOZ_PIN_END)
+		return VIM3_GPIOZ_OUTP_REG_OFFSET;
 	return -1; 
 }
 
@@ -162,6 +164,8 @@ static int gpioToGPLEVReg (int pin)
 		return VIM3_GPIOH_INP_REG_OFFSET;
 	if(pin >= VIM3_GPIOAO_PIN_START && pin <= VIM3_GPIOAO_PIN_END)
 		return VIM3_GPIOAO_INP_REG_OFFSET;
+	if(pin >= VIM3_GPIOZ_PIN_START && pin <= VIM3_GPIOZ_PIN_END)
+		return VIM3_GPIOZ_INP_REG_OFFSET;
 	return -1; 
 }
 
@@ -174,6 +178,8 @@ static int gpioToPUENReg(int pin)
 		return VIM3_GPIOA_PUEN_REG_OFFSET;
 	if(pin >= VIM3_GPIOH_PIN_START && pin <= VIM3_GPIOH_PIN_END)
 		return VIM3_GPIOH_PUEN_REG_OFFSET;
+	if(pin >= VIM3_GPIOZ_PIN_START && pin <= VIM3_GPIOZ_PIN_END)
+		return VIM3_GPIOZ_PUEN_REG_OFFSET;
 	if(pin >= VIM3_GPIOAO_PIN_START && pin <= VIM3_GPIOAO_PIN_END)
 		return VIM3_GPIOAO_PUEN_REG_OFFSET;
 	return -1;
@@ -188,6 +194,8 @@ static int gpioToPUPDReg(int pin)
 		return VIM3_GPIOA_PUPD_REG_OFFSET;
 	if(pin >= VIM3_GPIOH_PIN_START && pin <= VIM3_GPIOH_PIN_END)
 		return VIM3_GPIOH_PUPD_REG_OFFSET;
+	if(pin >= VIM3_GPIOZ_PIN_START && pin <= VIM3_GPIOZ_PIN_END)
+		return VIM3_GPIOZ_PUPD_REG_OFFSET;
 	if(pin >= VIM3_GPIOAO_PIN_START && pin <= VIM3_GPIOAO_PIN_END)
 		return VIM3_GPIOAO_PUPD_REG_OFFSET;
 	return -1;
@@ -202,6 +210,8 @@ static int gpioToShiftReg (int pin)
 		return pin - VIM3_GPIOA_PIN_START;
 	if(pin >= VIM3_GPIOH_PIN_START && pin <= VIM3_GPIOH_PIN_END)
 		return pin - VIM3_GPIOH_PIN_START;
+	if(pin >= VIM3_GPIOZ_PIN_START && pin <= VIM3_GPIOZ_PIN_END)
+		return pin - VIM3_GPIOZ_PIN_START;
 	if(pin >= VIM3_GPIOAO_PIN_START && pin <= VIM3_GPIOAO_PIN_END)
 		return pin - VIM3_GPIOAO_PIN_START;
 	return -1;
@@ -216,6 +226,8 @@ static int gpioToGPFSELReg(int pin)
 	    return VIM3_GPIOA_FSEL_REG_OFFSET;
 	if(pin >= VIM3_GPIOH_PIN_START && pin <= VIM3_GPIOH_PIN_END)
 		return VIM3_GPIOH_FSEL_REG_OFFSET;
+	if(pin >= VIM3_GPIOZ_PIN_START && pin <= VIM3_GPIOZ_PIN_END)
+		return VIM3_GPIOZ_FSEL_REG_OFFSET;
 	if(pin >= VIM3_GPIOAO_PIN_START && pin <= VIM3_GPIOAO_PIN_END)
 		return VIM3_GPIOAO_FSEL_REG_OFFSET;
 	return -1;
@@ -230,6 +242,8 @@ static int gpioToDSReg (int pin)
 	    return VIM3_GPIOA_DS_REG_5A_OFFSET;
 	if(pin >= VIM3_GPIOH_PIN_START && pin <= VIM3_GPIOH_PIN_END)
 		return VIM3_GPIOH_DS_REG_3A_OFFSET;
+	if(pin >= VIM3_GPIOZ_PIN_START && pin <= VIM3_GPIOZ_PIN_END)
+		return VIM3_GPIOZ_DS_REG_4_OFFSET;
 	if(pin >= VIM3_GPIOAO_PIN_START && pin <= VIM3_GPIOAO_PIN_END)
 		return VIM3_GPIOAO_DS_REG_A_OFFSET;
 	return -1;
@@ -243,6 +257,8 @@ static int gpioToMuxReg(int pin)
 	switch(pin){
 		case VIM3_GPIOA_PIN_START  ...VIM3_GPIOA_PIN_START + 7:
 			return  VIM3_GPIOA_MUX_D_REG_OFFSET;
+		case VIM3_GPIOZ_PIN_START  ...VIM3_GPIOZ_PIN_START + 7:
+			return  VIM3_GPIOZ_MUX_B_REG_OFFSET;
 		case VIM3_GPIOA_PIN_START + 8  ...VIM3_GPIOA_PIN_END:
 			return  VIM3_GPIOA_MUX_E_REG_OFFSET;
 		case VIM3_GPIOH_PIN_START  ...VIM3_GPIOH_PIN_END:
